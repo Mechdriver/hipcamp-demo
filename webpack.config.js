@@ -12,13 +12,17 @@ var config = {
   module: {
     rules : [
       {
-        test : /\.jsx?/,
-        include : APP_DIR,
-        loader : 'babel-loader'
+        test: /\.jsx?/,
+        include: APP_DIR,
+        loader: 'babel-loader'
       },
       {
         test: /\.jpe?g$/,
         loader: "file-loader"
+      },
+      {
+        test: /\.(s*)css$/,
+        loaders: ['style-loader', 'css-loader', 'sass-loader']
       }
     ]
   }
