@@ -9,15 +9,35 @@ class CampFeatures extends Component {
         super(props);
 
         this.state = {
-            features: []
+            features: [],
+            expandedIds: []
         };
 
         this.loadFeatures = this.loadFeatures.bind(this);
         this.featureList = this.featureList.bind(this);
+        this.getFeatureElement = this.getFeatureElement.bind(this);
+        this.handleListToggle = this.handleListToggle.bind(this);
     }
 
     componentDidMount() {
         this.loadFeatures();
+    }
+
+    handleListToggle(id, depth) {
+        let newExpandedIds = this.state.expandedIds;
+
+        if (newExpandedIds[depth] === undefined) {
+            newExpandedIds[depth] = []
+        }
+
+        if (newExpandedIds[depth].indexOf(id) != -1) {
+            let index = newExpandedIds[depth].indexOf(id);
+            newExpandedIds[depth][index] = null;
+        } else {
+            newExpandedIds[depth].push(id);
+        }
+
+        this.setState({expandedIds: newExpandedIds})
     }
 
     loadFeatures() {
@@ -30,20 +50,14 @@ class CampFeatures extends Component {
         });
     }
 
-    featureList(features) {
-        if (!features.length) {
-            return null;
-        }
-
+    featureList(features, depth) {
         return (
             <ul>
                 {features.map((feature, ndx) => {
+                    let element = this.getFeatureElement(feature, ndx, depth);
                     return (
                         <li key={ndx}>
-                            <button className='button block-mobile'>
-                                <span>{feature.title}</span>
-                            </button>
-                            {this.featureList(feature.subfeatures)}
+                            {element}
                         </li>
                     );
                 })}
@@ -51,12 +65,53 @@ class CampFeatures extends Component {
         );
     }
 
+    getFeatureElement(feature, id, depth) {
+        let renderSubFeaters = false;
+        let expandedIds = this.state.expandedIds;
+
+        if (expandedIds[depth] !== undefined && expandedIds[depth].indexOf(id) != -1) {
+            renderSubFeaters = true;
+        }
+
+        if (feature.presence) {
+            var featureElem = (
+                <Fragment>
+                    <button className='button button-green block-mobile' onClick={() => this.handleListToggle(id, depth)}>
+                        <span>{feature.title}</span>
+                        {feature.subfeatures.length > 0 &&
+                            <i className='fas fa-plus'></i>
+                        }
+                    </button>
+                    {feature.subfeatures.length > 0 && renderSubFeaters &&
+                        this.featureList(feature.subfeatures, depth + 1)
+                    }
+                </Fragment>
+            );
+        } else {
+            var featureElem = (
+                <Fragment>
+                    <button className='button button-red block-mobile' onClick={() => this.handleListToggle(id, depth)}>
+                        <span>{feature.title}</span>
+                        {feature.subfeatures.length > 0 &&
+                            <i className='fas fa-plus'></i>
+                        }
+                    </button>
+                    {feature.subfeatures.length > 0 && renderSubFeaters &&
+                        this.featureList(feature.subfeatures, depth + 1)
+                    }
+                </Fragment>
+            );
+        }
+
+        return featureElem;
+    }
+
     render() {
         return (
             <Fragment>
                 <div className='section background-dark'>
                     <div className='container text-center'>
-                        <h3 className='text-huge text-white text-with-subtitle'>Camp Silly Cone Vallée</h3>
+                        <h3 className='text-huge text-white text-with-subtitle'>Camp Silly Cone Valley</h3>
                     </div>
                 </div>
                 <br></br>
@@ -68,7 +123,7 @@ class CampFeatures extends Component {
                         </div>
                     </div>
                     <div className='container-small'>
-                        {this.featureList(this.state.features)}
+                        {this.featureList(this.state.features, 0)}
                     </div>
                 </div>
             </Fragment>
