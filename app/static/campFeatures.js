@@ -5,6 +5,11 @@ var FEATURES = [
     'subfeatures': [
         {
             'title': 'Urinal',
+            'presence': false,
+            'subfeatures': []
+        },
+        {
+            'title': 'Stall',
             'presence': true,
             'subfeatures': []
         }
@@ -41,11 +46,21 @@ var FEATURES = [
         'subfeatures': [
             {
                 'title': 'Meat Allowed',
-                'presence': true,
+                'presence': false,
                 'subfeatures': [
                     {
-                        'title': 'Beef?',
-                        'presence': true,
+                        'title': 'Beef',
+                        'presence': false,
+                        'subfeatures': []
+                    },
+                    {
+                        'title': 'Chicken',
+                        'presence': false,
+                        'subfeatures': []
+                    },
+                    {
+                        'title': 'Pork',
+                        'presence': false,
                         'subfeatures': []
                     }
                 ]
