@@ -4,7 +4,7 @@
   "description": "Hipcamp Frontend Demo",
   "main": "server.js",
   "scripts": {
-    "start": "nodemon server.js",
+    "start": "node server.js",
     "dev": "webpack --watch",
     "build": "webpack -p",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -22,7 +22,6 @@
   "dependencies": {
     "body-parser": "^1.18.2",
     "express": "^4.16.3",
-    "lodash": "^4.17.5",
     "react": "^16.3.2",
     "react-dom": "^16.3.2",
     "webpack": "^4.6.0"
