@@ -30,9 +30,9 @@ class CampFeatures extends Component {
             newExpandedIds[depth] = []
         }
 
-        if (newExpandedIds[depth].indexOf(id) != -1) {
+        if (newExpandedIds[depth].includes(id)) {
             let index = newExpandedIds[depth].indexOf(id);
-            newExpandedIds[depth][index] = null;
+            newExpandedIds[depth].splice(index, 1);
         } else {
             newExpandedIds[depth].push(id);
         }
@@ -45,8 +45,8 @@ class CampFeatures extends Component {
         .then((response) => response.json())
         .then((data) => {
             this.setState({
-                features: data}
-            );
+                features: data
+            });
         });
     }
 
@@ -66,42 +66,37 @@ class CampFeatures extends Component {
     }
 
     getFeatureElement(feature, id, depth) {
-        let renderSubFeaters = false;
+        let buttonStyle = 'button block-mobile button-red';
+        let buttonIcon = <Fragment></Fragment>;
+        let renderSubFeatures = false;
         let expandedIds = this.state.expandedIds;
 
-        if (expandedIds[depth] !== undefined && expandedIds[depth].indexOf(id) != -1) {
-            renderSubFeaters = true;
+        if (expandedIds[depth] !== undefined &&
+            expandedIds[depth].includes(id) &&
+            feature.subfeatures.length > 0) {
+
+            renderSubFeatures = true;
+            buttonIcon = <i className='fas fa-minus'></i>;
+        }
+
+        if (!renderSubFeatures && feature.subfeatures.length > 0) {
+            buttonIcon = <i className='fas fa-plus'></i>;
         }
 
         if (feature.presence) {
-            var featureElem = (
-                <Fragment>
-                    <button className='button button-green block-mobile' onClick={() => this.handleListToggle(id, depth)}>
-                        <span>{feature.title}</span>
-                        {feature.subfeatures.length > 0 &&
-                            <i className='fas fa-plus'></i>
-                        }
-                    </button>
-                    {feature.subfeatures.length > 0 && renderSubFeaters &&
-                        this.featureList(feature.subfeatures, depth + 1)
-                    }
-                </Fragment>
-            );
-        } else {
-            var featureElem = (
-                <Fragment>
-                    <button className='button button-red block-mobile' onClick={() => this.handleListToggle(id, depth)}>
-                        <span>{feature.title}</span>
-                        {feature.subfeatures.length > 0 &&
-                            <i className='fas fa-plus'></i>
-                        }
-                    </button>
-                    {feature.subfeatures.length > 0 && renderSubFeaters &&
-                        this.featureList(feature.subfeatures, depth + 1)
-                    }
-                </Fragment>
-            );
+            buttonStyle += 'button block-mobile button-green';
         }
+        var featureElem = (
+            <Fragment>
+                <button className={buttonStyle} onClick={() => this.handleListToggle(id, depth)}>
+                    <span>{feature.title}</span>
+                    {buttonIcon}
+                </button>
+                {renderSubFeatures &&
+                    this.featureList(feature.subfeatures, depth + 1)
+                }
+            </Fragment>
+        );
 
         return featureElem;
     }
